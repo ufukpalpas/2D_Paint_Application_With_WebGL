@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+    <script id="vertex-shader" type="x-shader/x-vertex">
+    attribute vec3 vPosition;
+    attribute vec4 vColor;
+    varying vec4 fColor;
+
+    void main()
+    {
+        gl_Position = vec4(vPosition, 1.0);
+        fColor = vColor;
+    }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+    precision mediump float;
+    varying vec4 fColor;
+
+    void main()
+    {
+        gl_FragColor = fColor;
+    }
+    </script>
+
+    <link rel="stylesheet" href="styles.css">
+    <script type="text/javascript" src="Common/webgl-utils.js"></script>
+    <script type="text/javascript" src="Common/initShaders.js"></script>
+    <script type="text/javascript" src="Common/MV.js"></script>
+    <script src="iro.min.js"></script>
+    <script type="text/javascript" src="paint.js"></script>
+
+    <body style="background-color: #533769;">
+        <div class="container" style="display:flex;">
+            <div class="left-half">
+                <canvas id="gl-canvas" width="950" height="950">>
+                    Oops ... your browser doesn't support the HTML5 canvas element
+                </canvas>
+            </div>
+            <div class="right-half" style="padding-left: 5%;">
+                <div class="color-btns">
+                    <button id="cBtn0" style="background-color: #00FF00; height: 100px; width: 100px;"></button>
+                    <button id="cBtn1" style="background-color: #FF0000; height: 100px; width: 100px;"></button>
+                    <button id="cBtn2" style="background-color: #FFFF00; height: 100px; width: 100px;"></button>
+                    <button id="cBtn3" style="background-color: #000000; height: 100px; width: 100px;"></button>
+                    <button id="cBtn4" style="background-color: #FF8C00; height: 100px; width: 100px;"></button>
+                    <button id="cBtn5" style="background-color: #FF69B4; height: 100px; width: 100px;"></button>
+                    <button id="cBtn6" style="background-color: #40E0D0; height: 100px; width: 100px;"></button>
+                    <button id="cBtn7" style="background-color: #FF6347; height: 100px; width: 100px;"></button>
+                </div>
+                <div class="cont" style="display: flex;">
+                    <div style="padding-top: 5%;" id="picker"></div>
+                    <div>
+                        <button id="saveBtn" style = "display:block; border-radius: 10%; background-color: #2fba7b; width:200px; padding: 10px 25px; margin-left:25%; margin-top: 12%; margin-bottom: 3px;">Save</button>
+                        <input type="file" id="up-file" hidden="hidden"/>
+                        <button type="button" id="selectBtn" style = "display:block; border-radius: 10%; background-color: #2f64ba; width:200px; padding: 10px 25px;margin-left:25%;">Choose a File</button>
+                        <span id="txt" style = "display:block; padding-top: 25px; width:200px; padding-bottom: 25px; margin-left: 25%; font-size: 20px; color: #00FF00;">No file chosen, yet.</span>
+                        <button id="uplBtn" style = "display:block; border-radius: 10%; background-color: #2fba7b; width:200px; padding: 10px 25px;margin-left:25%; margin-bottom: 3px;">Load From a Save</button>
+                        <div class="layer-div">
+                            <label class="rad-label">
+                              <input type="radio" class="rad-input" value="1" id="lay1" name="rad" checked="checked">
+                              <div class="rad-design"></div>
+                              <div class="rad-text"id="1">Layer 1</div>
+                            </label>
+                            <label class="rad-label">
+                              <input type="radio" class="rad-input" value="2" id="lay2" name="rad">
+                              <div class="rad-design"></div>
+                              <div class="rad-text" id="2">Layer 2</div>
+                            </label>
+                            <label class="rad-label">
+                              <input type="radio" class="rad-input" value="3" id="lay3" name="rad">
+                              <div class="rad-design"></div>
+                              <div class="rad-text" id="3">Layer 3</div>
+                            </label>
+                            <label class="rad-label">
+                              <input type="radio" class="rad-input" value="4" id="lay4" name="rad">
+                              <div class="rad-design"></div>
+                              <div class="rad-text" id="4">Layer 4</div>
+                            </label>
+                        </div>
+                        <button id="aboveBtn" style = "display:block; border-radius: 10%; background-color: #34ca2f; width:200px; padding: 10px 25px;margin-left:25%; margin-bottom: 3px;">Move Above</button>
+                        <button id="belowBtn" style = "display:block; border-radius: 10%; background-color: #e03e3e; width:200px; padding: 10px 25px;margin-left:25%;">Move Below</button>
+                        <div style="display:block; margin-left: 25%; margin-top: 20px; color: red; size: 20px; font-size: 20px;">
+                            Brush Size<input id="slider" type="range"
+                             min="1" max="10" step="1" value="5" style="margin-top: 5px; width:200px;"/>
+                             <span style="display:block; margin-left: 80px;" id="size">5.0</span>
+                        </div>
+                        <button id="moveBtn" class="era">Move a Part</button>
+                        <div style="display:block; margin-left: 0%; margin-top: 20px;  size: 20px; ">
+                            <div style="display:block; margin-left: 25%; margin-top: 20px;  size: 20px; ">
+                            <button id="rectangle-btn"  class="button" ><img src=rect_filled.png height="40"></button>
+                            <button id="ellipse-btn"  class="button"><img src=ellipse_filled.png height="40"></button>
+                            <button id="triangle-btn" class="button" "><img src=triangle_filled.png height="40"></button>                            
+                            </div>
+                            <div style="display:block; margin-left: 25%; margin-top: 20px;  size: 20px; ">
+                            <button id="lrectangle-btn"  class="button" ><img src=rect.png height="40"></button>
+                            <button id="lellipse-btn"  class="button"><img src=ellipse.png height="40"></button>
+                            <button id="ltriangle-btn" class="button" "><img src=triangle.png height="40"></button>                            
+                            </div>
+                            <div style="display:block; margin-left: 35%; margin-top: 20px;  size: 20px; ">
+                                <button id="brush-btn"  class="clicked" ><img src=brush.png height="30"></button>
+                                <button id="eraser"  class="button" ><img src=eraser.png height="30"></button>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
